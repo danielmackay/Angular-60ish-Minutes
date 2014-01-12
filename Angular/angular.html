@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" ng-app="demoApp">
+<head>
+    <title>Using Angular JS Directives and Data Binding</title>
+</head>
+<body>
+    <div>
+        <!-- place holder for views -->
+        <div ng-view></div>
+    </div>
+
+    <script src="scripts/angular.min.js"></script>
+    <script src="scripts/angular-route.min.js"></script>
+    <script>
+        var demoApp = angular.module('demoApp', ['ngRoute']);
+
+
+
+        demoApp.config(['$routeProvider', function ($routeProvider) {
+            $routeProvider
+              .when('/',
+              {
+                  controller: 'SimpleController',
+                  templateUrl: 'partials/View1.html'
+              })
+              .when('/view2',
+              {
+                  controller: 'SimpleController',
+                  templateUrl: 'partials/View2.html'
+              })
+              .otherwise({ redirectTo: '/' });
+        }]);
+
+
+        demoApp.factory('simpleFactory', function() {
+            var customers = [
+              { name: 'Dan', city: 'Sydney' },
+              { name: 'Seb', city: 'Brisbane' },
+              { name: 'Eve', city: 'Montreal' }
+            ];
+
+            var factory = {};
+            factory.getCustomers = function() {
+                return customers;
+            };
+            factory.postCustomer = function() {
+
+            };
+
+            return factory;
+        });
+
+        var controllers = {};
+        controllers.SimpleController = function ($scope, simpleFactory) {
+            $scope.customers = [];
+
+            (function init() {
+                $scope.customers = simpleFactory.getCustomers();
+            })();
+
+            $scope.addCustomer = function () {
+                $scope.customers.push({ name: $scope.newCustomer.name, city: $scope.newCustomer.city });
+            };
+        };
+
+        demoApp.controller(controllers);
+    </script>
+</body>
+</html>
